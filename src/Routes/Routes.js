@@ -1,5 +1,5 @@
 const express = require("express");
-const { CreateUser, getAllData } = require('../controller/userController');
+const { CreateUser,getUserById } = require('../controller/userController');
 
 const router = express.Router();
 
@@ -8,9 +8,7 @@ const router = express.Router();
 
 // POST route to create a user
 router.post('/CreateUser', CreateUser);
-
-// GET route to fetch all user data
-router.get('/getAllData', getAllData);
+router.get('/getUserById/:id', getUserById);
 
 router.use((_, res) => {res.status(404).send({ status: false, msg: 'Invalid URL' })});
 
