@@ -1,0 +1,26 @@
+{
+  "name": "classicbikes_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev" : "npx nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SOULsprizen/ClassicBikes_Server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SOULsprizen/ClassicBikes_Server/issues"
+  },
+  "homepage": "https://github.com/SOULsprizen/ClassicBikes_Server#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "mongoos": "^0.0.1-security",
+    "mongoose": "^8.16.0",
+    "nodemon": "^3.1.10"
+  }
+}
