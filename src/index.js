@@ -1,14 +1,22 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const router = require('./routes/routes.js');
 
-const express=require('express')
-const mongoose=require('mongoose')
-const router=require('./Routes/Routes.js')
-const app=express()
+dotenv.config();
+const app = express();
+
 app.use(express.json())
-const port=8080
- const mongoosedburl='mongodb+srv://abhinavr:Abhi145@ab1.n2khlb5.mongodb.net/'
 
- mongoose.connect(mongoosedburl)
-    .then(() => console.log('mongoosedb connection successful'))
-    .catch((e) =>console.log(e))
-app.use('/',router)
-    app.listen(port, () => console.log('server is running',port));
+const PORTNUMBER = 8080;
+
+mongoose.connect(process.env.MONGODB_URL)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((error) => console.log('MongoDB connection error', error.message));
+
+app.use('/', router);
+
+app.listen(PORTNUMBER, () => console.log('Server is running on port -', PORTNUMBER));
+
+
+
