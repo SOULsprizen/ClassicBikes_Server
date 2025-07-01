@@ -1,5 +1,5 @@
 const express = require("express");
-const { CreateUser,getUserById } = require('../controller/userController');
+const { CreateUser,getUserById, UserOtpVerify } = require('../controller/userController');
 
 const router = express.Router();
 
@@ -9,6 +9,7 @@ const router = express.Router();
 // POST route to create a user
 router.post('/CreateUser', CreateUser);
 router.get('/getUserById/:id', getUserById);
+router.post('/user_otp_verify/:id', UserOtpVerify);
 
 router.use((_, res) => {res.status(404).send({ status: false, msg: 'Invalid URL' })});
 

@@ -29,10 +29,12 @@ const userSchema = new mongoose.Schema({
             userOtp: { type: String, default: 0 },
             isDeleted: { type: Boolean, default: false },
             isVerify: { type: Boolean, default: false },
+            isOtpVerified: { type: String, default: 0 },
         },
         Admin: {
             adminOtp: { type: String, default: 0 },
             isAccountActive: { type: Boolean, default: true },
+            isOtpVerified: { type: String, default: 0 },
         }
     },
 }, { timestamps: true });
