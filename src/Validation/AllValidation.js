@@ -1,5 +1,14 @@
-exports.userValidationRules = {
-    name: { required: true, regex: /^[A-Za-z ]+$/, errorMsg: 'Invalid Name!' },
-    email: { required: true, regex: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, errorMsg: 'Invalid Email!' },
-    password: { required: true, regex: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/, errorMsg: 'Invalid Password!' }
-};
+exports.ValidName = (name)=>{
+    const NameRegex = /^[A-Za-z ]+$/;
+    return NameRegex.test(name);
+}
+
+exports.ValidEmail = (email)=>{
+    const EmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return EmailRegex.test(email);
+}
+
+exports.ValidPassword = (password)=>{
+    const PasswordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
+    return PasswordRegex.test(password);
+}

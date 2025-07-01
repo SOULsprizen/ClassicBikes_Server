@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json())
 app.use(cors());
 
-const PORTNUMBER = 8080;
+const PORTNUMBER = 8080; 
 
 mongoose.connect(process.env.MONGODB_URL)
   .then(() => console.log('Connected to MongoDB'))
