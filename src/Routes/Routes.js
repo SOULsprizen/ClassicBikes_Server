@@ -1,5 +1,5 @@
 const express = require("express");
-const { CreateUser,getUserById, UserOtpVerify } = require('../controller/userController');
+const { CreateUser, getUserById, UserOtpVerify, LogInUser } = require('../controller/userController');
 
 const router = express.Router();
 
@@ -10,7 +10,8 @@ const router = express.Router();
 router.post('/CreateUser', CreateUser);
 router.get('/getUserById/:id', getUserById);
 router.post('/user_otp_verify/:id', UserOtpVerify);
+router.post('/LogInUser', LogInUser);
 
-router.use((_, res) => {res.status(404).send({ status: false, msg: 'Invalid URL' })});
+router.use((_, res) => { res.status(404).send({ status: false, msg: 'Invalid URL' }) });
 
 module.exports = router;
