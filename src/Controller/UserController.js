@@ -71,7 +71,7 @@ exports.LogInUser = async(req,res)=>{
         const data = req.body;
         const {email,password} = data;
 
-        const existingUser = await userModel.findOne({email:email});
+        const existingUser = await userModel.findOne({email:email,role:'user'});
 
         if(!existingUser) return res.status(400).send({status:false,msg:"User Not Found"});
 

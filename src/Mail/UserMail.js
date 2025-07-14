@@ -46,3 +46,45 @@ exports.otpVerificationUser = async (name, email, randomOtp) => {
     console.log(e);
   }
 };
+
+
+exports.otpVerificationAdmin = async (name, email, randomOtp) => {
+  try {
+    const info = await transporter.sendMail({
+      from: '"Hartron Admin Panel" <ravi6680singh@gmail.com>',
+      to: email,
+      subject: "🔐 Admin OTP Verification - Hartron Panel Access",
+      html: `
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 25px; border: 1px solid #dcdcdc; border-radius: 10px; background-color: #fafafa;">
+          
+          <h2 style="text-align: center; color: #004080;">Hello Admin ${name},</h2>
+          
+          <p style="font-size: 16px; color: #333; line-height: 1.6;">
+            You are attempting to access the <strong>Hartron Admin Dashboard</strong>. Please verify your identity by entering the One-Time Password (OTP) below:
+          </p>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <span style="display: inline-block; background-color: #e6f2ff; padding: 15px 25px; font-size: 26px; letter-spacing: 6px; border-radius: 6px; color: #004080; font-weight: 600;">
+              ${randomOtp}
+            </span>
+          </div>
+          
+          <p style="font-size: 14px; color: #555;">🔒 This OTP is valid for <strong>10 minutes</strong> and should not be shared with anyone.</p>
+          
+          <p style="font-size: 14px; color: #555;">If you did not initiate this action, please contact your system administrator immediately.</p>
+          
+          <hr style="margin: 30px 0; border-color: #ddd;" />
+          
+          <p style="font-size: 12px; color: #999; text-align: center;">
+            © 2025 Hartron Skill Centre Admin Panel. All rights reserved.
+          </p>
+        </div>
+      `
+    });
+
+    console.log("OTP email sent to admin:", info.messageId);
+  } catch (e) {
+    console.log("Error sending admin OTP email:", e);
+  }
+};
+
