@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String, required: true, trim: true,
-        required: [true, 'Password is required'], 
+        required: [true, 'Password is required'],
         validate: [ValidPassword, 'Password is not valid']
     },
     role: { type: String, enum: ['user', 'admin'], required: true, trim: true },

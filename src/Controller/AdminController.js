@@ -32,3 +32,31 @@ exports.LogInAdmin = async (req, res) => {
     }
     catch (e) { errorHandlingdata(e, res) }
 }
+
+exports.GetAllUserData = async (req, res) => {
+    try {
+        const type = req.params.type;
+        const isDeleted = req.params.isDeleted;
+        console.log(isDeleted)
+        if (type == 'all') {
+            if ((isDeleted == 'true')) {
+                const DB = await userModel.find({ role: 'user', 'Varification.user.isDeleted': true });
+                if (DB.length == 0) return res.status(400).send({ status: false, msg: 'Data Not Found' })
+                if (!DB) return res.status(400).send({ status: false, msg: 'Data Not Found' })
+                return res.status(200).send({ status: true, msg: 'Successfully Get All User Data', data: DB })
+            }
+            else {
+
+                const DB = await userModel.find({ role: 'user', 'Varification.user.isDeleted': false });
+                if (!DB) return res.status(400).send({ status: false, msg: 'Data Not Found' })
+                return res.status(200).send({ status: true, msg: 'Successfully Get All User Data', data: DB })
+            }
+        }
+        else {
+            const DB = await userModel.findById(type);
+            if (!DB) return res.status(400).send({ status: false, msg: 'Data Not Found' })
+            return res.status(200).send({ status: true, msg: 'Successfully User Data', data: DB })
+        }
+    }
+    catch (e) { errorHandlingdata(e, res) }
+}

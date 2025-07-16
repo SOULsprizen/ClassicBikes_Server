@@ -1,7 +1,7 @@
 const express = require("express");
 const { CreateUser, getUserById, UserOtpVerify, LogInUser } = require('../controller/userController');
-const { LogInAdmin} = require('../controller/AdminController')
-
+const { LogInAdmin, GetAllUserData } = require('../controller/AdminController')
+const { authenticate } = require('../middleware/UserAuth')
 const router = express.Router();
 
 // Router Provide CRUD Operation: 
@@ -16,6 +16,7 @@ router.post('/LogInUser', LogInUser);
 
 // POST route to create a Admin
 router.post('/LogInAdmin', LogInAdmin);
+router.get('/GetAllUserData/:type/:isDeleted',authenticate, GetAllUserData);
 
 router.use((_, res) => { res.status(404).send({ status: false, msg: 'Invalid URL' }) });
 
