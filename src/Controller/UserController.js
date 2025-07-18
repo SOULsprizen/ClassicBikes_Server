@@ -66,6 +66,21 @@ exports.UserOtpVerify = async (req, res) => {
     catch (e) { errorHandlingdata(e, res) }
 }
 
+exports.resendOtp = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const user = await userModel.findById(id);
+        if (!user) return res.status(400).send({ status: true, msg: "User not found" });
+
+        const randomOtp = Math.floor(1000 + Math.random() * 9000);
+
+        await userModel.findByIdAndUpdate({ _id: id }, { $set: { 'Varification.user.userOtp': randomOtp } }, { new: true });
+        otpVerificationUser(user.name, user.email, randomOtp);
+        res.status(200).send({ status: true, msg: "OTP sent successfully" });
+    } catch (e) { errorHandlingdata(e, res) }
+}
+
 exports.LogInUser = async(req,res)=>{
     try{
         const data = req.body;
@@ -112,4 +127,62 @@ exports.getUserById = async (req, res) => {
         return res.status(200).send({ status: true, data: DB })
     }
     catch (e) { errorHandlingdata(e, res) }
+}
+
+exports.userDelete = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const user = await userModel.findById(id);
+        if (!user) return res.status(400).send({ status: true, msg: "User not found" });
+
+        
+        await userModel.findByIdAndUpdate({ _id: id }, { $set: { 'Varification.user.isDeleted': true } });
+
+        res.status(200).send({ status: true, msg: "Account Deleted successfully" });
+
+    } catch (e) { errorHandlingdata(e, res) }
+}
+
+exports.userupdated = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const data = req.body
+
+        const {name}=data;
+
+        const user = await userModel.findById(id);
+        if (!user) return res.status(400).send({ status: true, msg: "User not found" });
+
+        const DB = await userModel.findByIdAndUpdate({ _id: id }, { $set: { name: name } },{new:true});
+
+        const DBDATA ={name:DB.name,email:DB.email,_id:DB._id}
+
+        res.status(200).send({ status: true, msg: "Account Updated successfully",data:DBDATA });
+        
+    } catch (e) { errorHandlingdata(e, res) }
+}
+
+exports.changePassword = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const data = req.body;
+
+        const {currentPassword,newPassword} = data;
+
+        if(currentPassword==newPassword) return res.status(400).send({ status: false, msg: "not provide same password" });    
+
+        const user = await userModel.findById(id);
+        if (!user) return res.status(400).send({ status: true, msg: "User not found" });
+
+        const bcryptPass = await bcrypt.compare(currentPassword,user.password);
+        if(!bcryptPass) return res.status(400).send({ status: true, msg: "Wrong Password" });
+
+        const hashPassword = await bcrypt.hash(newPassword, 10);
+       
+        await userModel.findByIdAndUpdate({ _id: id }, { $set: { password: hashPassword } });
+
+        res.status(200).send({ status: true, msg: "Password Updated successfully" });
+        
+    } catch (e) { errorHandlingdata(e, res) }
 }
