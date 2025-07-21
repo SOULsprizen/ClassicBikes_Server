@@ -5,7 +5,7 @@ const { ValidName, ValidEmail, ValidPassword } = require('../Validation/AllValid
 const userSchema = new mongoose.Schema({
     profileImg: {
         type: {
-            url: { type: String, required: false, trim: true },
+            secure_url: { type: String, required: false, trim: true },
             public_id: { type: String, required: false, trim: true }
         }, trim: true
     },

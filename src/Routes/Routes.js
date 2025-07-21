@@ -1,13 +1,13 @@
 const express = require("express");
+const multer = require('multer');
 const { CreateUser, getUserById, UserOtpVerify, LogInUser, resendOtp,userDelete,userupdated,
-    changePassword} = require('../controller/userController');
+    changePassword,uploadProfileImg} = require('../controller/userController');
 const { LogInAdmin, GetAllUserData } = require('../controller/AdminController')
 const { authenticate } = require('../middleware/adminAuth')
 const {userAuthenticate,userAuthorize} =require('../middleware/userAuth')
 const router = express.Router();
 
-// Router Provide CRUD Operation: 
-// C - Create (POST), R - Read (GET), U - Update (PUT), D - Delete (DELETE)
+const upload = multer({ storage: multer.diskStorage({}) });
 
 // POST route to create a user
 router.post('/CreateUser', CreateUser);
@@ -18,6 +18,7 @@ router.get('/resendOtp/:id', resendOtp);
 router.delete('/userDelete/:id', userAuthenticate,userAuthorize, userDelete);
 router.put('/userupdated/:id', userAuthenticate,userAuthorize, userupdated);
 router.put('/changePassword/:id', userAuthenticate,userAuthorize, changePassword);
+router.put('/uploadProfileImg/:id',upload.single("profileImg"), userAuthenticate,userAuthorize, uploadProfileImg);
 
 
 // POST route to create a Admin

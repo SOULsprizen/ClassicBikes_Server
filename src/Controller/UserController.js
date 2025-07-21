@@ -3,6 +3,7 @@ const { otpVerificationUser } = require('../Mail/UserMail')
 const { errorHandlingdata } = require('../error/errorHandling')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { uploadProdileImg } = require('../Images/UploadImg')
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -22,7 +23,7 @@ exports.CreateUser = async (req, res) => {
         const existingUser = await userModel.findOneAndUpdate({ email: data.email }, { $set: { 'Varification.user.userOtp': randomOtp } }).select('+Varification');
 
         if (existingUser) {
-            const DBDATABASE = {name: existingUser.name,email: existingUser.email,_id: existingUser._id}
+            const DBDATABASE = { name: existingUser.name, email: existingUser.email, _id: existingUser._id }
 
             const userVerification = existingUser.Varification?.user || {};
             const adminVerification = existingUser.Varification?.Admin || {};
@@ -32,12 +33,12 @@ exports.CreateUser = async (req, res) => {
             if (!adminVerification.isAccountActive) return res.status(400).send({ status: false, msg: 'User is blocked by admin' });
 
             otpVerificationUser(existingUser.name, existingUser.email, randomOtp);
-            return res.status(200).send({ status: true, msg: 'OTP sent successfully',data:DBDATABASE });
+            return res.status(200).send({ status: true, msg: 'OTP sent successfully', data: DBDATABASE });
         }
         otpVerificationUser(data.name, data.email, randomOtp);
         const newUser = await userModel.create(data);
-        
-        const newDB = {name: newUser.name,email: newUser.email,_id: newUser._id}
+
+        const newDB = { name: newUser.name, email: newUser.email, _id: newUser._id }
 
         return res.status(201).send({ status: true, msg: 'User created successfully', data: newDB });
 
@@ -56,13 +57,13 @@ exports.UserOtpVerify = async (req, res) => {
 
         if (!user) return res.status(400).send({ status: true, msg: "User not found" });
         const dbOtp = user.Varification.user.userOtp;
-        console.log(dbOtp,otp)
-        if(!(dbOtp==otp)) return res.status(400).send({ status: true, msg: "Wrong otp" });
+        console.log(dbOtp, otp)
+        if (!(dbOtp == otp)) return res.status(400).send({ status: true, msg: "Wrong otp" });
 
         await userModel.findByIdAndUpdate({ _id: id }, { $set: { 'Varification.user.isVerify': true } }, { new: true });
         res.status(200).send({ status: true, msg: "User Verify successfully" });
-       
-    }   
+
+    }
     catch (e) { errorHandlingdata(e, res) }
 }
 
@@ -81,28 +82,28 @@ exports.resendOtp = async (req, res) => {
     } catch (e) { errorHandlingdata(e, res) }
 }
 
-exports.LogInUser = async(req,res)=>{
-    try{
+exports.LogInUser = async (req, res) => {
+    try {
         const data = req.body;
-        const {email,password} = data;
+        const { email, password } = data;
 
-        const existingUser = await userModel.findOne({email:email,role:'user'});
+        const existingUser = await userModel.findOne({ email: email, role: 'user' });
 
-        if(!existingUser) return res.status(400).send({status:false,msg:"User Not Found"});
+        if (!existingUser) return res.status(400).send({ status: false, msg: "User Not Found" });
 
         data.Varification = data.Varification || {};
         data.Varification.user = data.Varification.user || {};
         data.Varification.Admin = data.Varification.Admin || {};
 
-        const comparePass = await bcrypt.compare(password,existingUser.password);
-        if(!comparePass) return res.status(400).send({status:false,msg:"Wrong Password"});
+        const comparePass = await bcrypt.compare(password, existingUser.password);
+        if (!comparePass) return res.status(400).send({ status: false, msg: "Wrong Password" });
 
-         if (existingUser) { 
-            const DBDATABASE = {name: existingUser.name,email: existingUser.email,_id: existingUser._id}
+        if (existingUser) {
+            const DBDATABASE = { name: existingUser.name, email: existingUser.email, _id: existingUser._id }
 
             const userVerification = existingUser.Varification?.user || {};
             const adminVerification = existingUser.Varification?.Admin || {};
-            
+
             if (userVerification.isDeleted) return res.status(400).send({ status: false, msg: 'User already deleted' });
             if (!userVerification.isVerify) return res.status(400).send({ status: false, msg: 'pls Verify Your Otp' });
             if (!adminVerification.isAccountActive) return res.status(400).send({ status: false, msg: 'User is blocked by admin' });
@@ -116,7 +117,7 @@ exports.LogInUser = async(req,res)=>{
 
 
     }
-    catch(e){ errorHandlingdata(e, res) }
+    catch (e) { errorHandlingdata(e, res) }
 }
 
 exports.getUserById = async (req, res) => {
@@ -136,7 +137,7 @@ exports.userDelete = async (req, res) => {
         const user = await userModel.findById(id);
         if (!user) return res.status(400).send({ status: true, msg: "User not found" });
 
-        
+
         await userModel.findByIdAndUpdate({ _id: id }, { $set: { 'Varification.user.isDeleted': true } });
 
         res.status(200).send({ status: true, msg: "Account Deleted successfully" });
@@ -149,17 +150,17 @@ exports.userupdated = async (req, res) => {
         const id = req.params.id;
         const data = req.body
 
-        const {name}=data;
+        const { name } = data;
 
         const user = await userModel.findById(id);
         if (!user) return res.status(400).send({ status: true, msg: "User not found" });
 
-        const DB = await userModel.findByIdAndUpdate({ _id: id }, { $set: { name: name } },{new:true});
+        const DB = await userModel.findByIdAndUpdate({ _id: id }, { $set: { name: name } }, { new: true });
 
-        const DBDATA ={name:DB.name,email:DB.email,_id:DB._id}
+        const DBDATA = { name: DB.name, email: DB.email, _id: DB._id }
 
-        res.status(200).send({ status: true, msg: "Account Updated successfully",data:DBDATA });
-        
+        res.status(200).send({ status: true, msg: "Account Updated successfully", data: DBDATA });
+
     } catch (e) { errorHandlingdata(e, res) }
 }
 
@@ -168,21 +169,45 @@ exports.changePassword = async (req, res) => {
         const id = req.params.id;
         const data = req.body;
 
-        const {currentPassword,newPassword} = data;
+        const { currentPassword, newPassword } = data;
 
-        if(currentPassword==newPassword) return res.status(400).send({ status: false, msg: "not provide same password" });    
+        if (currentPassword == newPassword) return res.status(400).send({ status: false, msg: "not provide same password" });
 
         const user = await userModel.findById(id);
         if (!user) return res.status(400).send({ status: true, msg: "User not found" });
 
-        const bcryptPass = await bcrypt.compare(currentPassword,user.password);
-        if(!bcryptPass) return res.status(400).send({ status: true, msg: "Wrong Password" });
+        const bcryptPass = await bcrypt.compare(currentPassword, user.password);
+        if (!bcryptPass) return res.status(400).send({ status: true, msg: "Wrong Password" });
 
         const hashPassword = await bcrypt.hash(newPassword, 10);
-       
+
         await userModel.findByIdAndUpdate({ _id: id }, { $set: { password: hashPassword } });
 
         res.status(200).send({ status: true, msg: "Password Updated successfully" });
-        
+
     } catch (e) { errorHandlingdata(e, res) }
+}
+
+exports.uploadProfileImg = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const file = req.file;
+
+        if (!file) return res.status(400).send({ status: false, msg: "Please provide file" });
+
+        const imgUrl = await uploadProdileImg(file.path);
+
+        const checkUser = await userModel.findByIdAndUpdate(id, { $set: { profileImg: imgUrl } }, { new: true });
+        if (!checkUser) return res.status(400).send({ status: false, msg: "User not found" });
+
+        const DB = {
+            _id: checkUser._id,
+            name: checkUser.name,
+            email: checkUser.email,
+            profileImg: checkUser.profileImg
+        }
+
+        res.status(200).send({ status: true, msg: "Profile Updated successfully", data: DB });
+    }
+    catch (e) { errorHandlingdata(e, res) }
 }
