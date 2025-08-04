@@ -88,3 +88,49 @@ exports.otpVerificationAdmin = async (name, email, randomOtp) => {
   }
 };
 
+exports.changeEmail = async (name, email, randomOtp) => {
+  console.log(name,email,randomOtp)
+  try {
+    const info = await transporter.sendMail({
+      from: '"Hartron Admin Panel" <ravi6680singh@gmail.com>',
+      to: email,
+      subject: "🔐 Email Change Verification - Hartron Admin Panel",
+      html: `
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 25px; border: 1px solid #dcdcdc; border-radius: 10px; background-color: #fafafa;">
+          
+          <h2 style="text-align: center; color: #004080;">Hi ${name},</h2>
+          
+          <p style="font-size: 16px; color: #333; line-height: 1.6;">
+            You've requested to <strong>change the email address</strong> associated with your <strong>Hartron Admin Panel</strong> account.
+          </p>
+          
+          <p style="font-size: 16px; color: #333; line-height: 1.6;">
+            To confirm this change, please enter the following One-Time Password (OTP):
+          </p>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <span style="display: inline-block; background-color: #e6f2ff; padding: 15px 25px; font-size: 26px; letter-spacing: 6px; border-radius: 6px; color: #004080; font-weight: 600;">
+              ${randomOtp}
+            </span>
+          </div>
+          
+          <p style="font-size: 14px; color: #555;">⚠️ This OTP is valid for <strong>10 minutes</strong>. Do not share it with anyone.</p>
+          
+          <p style="font-size: 14px; color: #555;">If you did not request this change, please notify your system administrator immediately.</p>
+          
+          <hr style="margin: 30px 0; border-color: #ddd;" />
+          
+          <p style="font-size: 12px; color: #999; text-align: center;">
+            © 2025 Hartron Skill Centre Admin Panel. All rights reserved.
+          </p>
+        </div>
+      `
+    });
+
+    console.log("Email change OTP sent to:", info.messageId);
+  } catch (e) {
+    console.log("Error sending email change OTP:", e);
+  }
+};
+
+

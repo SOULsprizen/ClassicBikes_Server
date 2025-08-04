@@ -18,3 +18,10 @@ exports.uploadProdileImg = async (file) => {
     }
     catch (err) { console.log(err) }
 }
+
+exports.deleteProfileImg = async (id) => {
+    try {
+        await cloudinary.uploader.destroy(id);
+    }
+    catch (err) { console.log(err) }
+}

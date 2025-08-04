@@ -1,7 +1,7 @@
 const express = require("express");
 const multer = require('multer');
 const { CreateUser, getUserById, UserOtpVerify, LogInUser, resendOtp,userDelete,userupdated,
-    changePassword,uploadProfileImg} = require('../controller/userController');
+    changePassword,uploadProfileImg, newEmail,newEmailVerify} = require('../controller/userController');
 const { LogInAdmin, GetAllUserData } = require('../controller/AdminController')
 const { authenticate } = require('../middleware/adminAuth')
 const {userAuthenticate,userAuthorize} =require('../middleware/userAuth')
@@ -19,6 +19,8 @@ router.delete('/userDelete/:id', userAuthenticate,userAuthorize, userDelete);
 router.put('/userupdated/:id', userAuthenticate,userAuthorize, userupdated);
 router.put('/changePassword/:id', userAuthenticate,userAuthorize, changePassword);
 router.put('/uploadProfileImg/:id',upload.single("profileImg"), userAuthenticate,userAuthorize, uploadProfileImg);
+router.put('/newEmail/:id', userAuthenticate,userAuthorize, newEmail);
+router.post('/newEmailVerify/:id', userAuthenticate,userAuthorize, newEmailVerify);
 
 
 // POST route to create a Admin
@@ -27,4 +29,4 @@ router.get('/GetAllUserData/:type/:isDeleted',authenticate, GetAllUserData);
 
 router.use((_, res) => { res.status(404).send({ status: false, msg: 'Invalid URL' }) });
 
-module.exports = router;
+module.exports = router; 

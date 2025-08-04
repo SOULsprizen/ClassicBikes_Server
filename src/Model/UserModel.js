@@ -25,6 +25,11 @@ const userSchema = new mongoose.Schema({
     },
     role: { type: String, enum: ['user', 'admin'], required: true, trim: true },
     Varification: {
+        email:{
+            newEmail:{type:String,trim:true},
+            userOtp: { type: String, default: 0 },
+            expireTime: { type: String, default: 0 },
+        },
         user: {
             userOtp: { type: String, default: 0 },
             isDeleted: { type: Boolean, default: false },
