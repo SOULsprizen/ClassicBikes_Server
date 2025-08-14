@@ -57,7 +57,6 @@ exports.UserOtpVerify = async (req, res) => {
 
         if (!user) return res.status(400).send({ status: true, msg: "User not found" });
         const dbOtp = user.Varification.user.userOtp;
-        console.log(dbOtp, otp)
         if (!(dbOtp == otp)) return res.status(400).send({ status: true, msg: "Wrong otp" });
 
         await userModel.findByIdAndUpdate({ _id: id }, { $set: { 'Varification.user.isVerify': true } }, { new: true });
@@ -196,7 +195,7 @@ exports.changePassword = async (req, res) => {
 exports.uploadProfileImg = async (req, res) => {
     try {
         const { id } = req.params;
-        const file = req.file;
+        const file = req.file; 
 
         if (!file) return res.status(400).send({ status: false, msg: "Please provide file" });
 
@@ -267,7 +266,6 @@ exports.newEmailVerify = async (req, res) => {
     try {
         const otp = req.body.otp;
         const id = req.params.id;
-        console.log(otp, id)
 
         const existingId = await userModel.findById(id);
         if (!existingId) return res.status(400).send({ status: false, msg: "User not found" });

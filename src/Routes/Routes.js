@@ -9,9 +9,9 @@ const router = express.Router();
 
 const upload = multer({ storage: multer.diskStorage({}) });
 
-// POST route to create a user
+// POST route to create a user   
 router.post('/CreateUser', CreateUser);
-router.get('/getUserById/:id', getUserById);
+router.get('/getUserById/:id', getUserById); 
 router.post('/user_otp_verify/:id', UserOtpVerify);
 router.post('/LogInUser', LogInUser);
 router.get('/resendOtp/:id', resendOtp);

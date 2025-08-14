@@ -37,7 +37,6 @@ exports.GetAllUserData = async (req, res) => {
     try {
         const type = req.params.type;
         const isDeleted = req.params.isDeleted;
-        console.log(isDeleted)
         if (type == 'all') {
             if ((isDeleted == 'true')) {
                 const DB = await userModel.find({ role: 'user', 'Varification.user.isDeleted': true });
