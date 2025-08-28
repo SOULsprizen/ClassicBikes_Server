@@ -4,8 +4,7 @@ const jwt =require('jsonwebtoken')
 exports.userAuthenticate = (req, res, next) => {
     try {
         const token = req.headers["x-api-key"]
-        console.log(token)
-        console.log(req.params)
+       
         if (!token) { return res.status(400).send({ status: false, msg: "Token must be present" }) }
 
         const decodedToken = jwt.verify(token, process.env.JWT_User_SECRET_KEY)

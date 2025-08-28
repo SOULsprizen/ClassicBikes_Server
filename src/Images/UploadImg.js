@@ -25,3 +25,14 @@ exports.deleteProfileImg = async (id) => {
     }
     catch (err) { console.log(err) }
 }
+
+
+exports.uploadProduct = async (file) => {
+    try {
+
+        const uploadResult = await cloudinary.uploader.upload(file);
+
+        return { secure_url: uploadResult.secure_url, public_id: uploadResult.public_id }
+    }
+    catch (err) { console.log(err) }
+}

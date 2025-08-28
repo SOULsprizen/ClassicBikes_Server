@@ -2,32 +2,54 @@ const userModel = require('../Model/userModel');
 const { otpVerificationAdmin } = require('../Mail/UserMail')
 const { errorHandlingdata } = require('../error/errorHandling')
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const dotenv = require('dotenv');
-dotenv.config();
-
-
+require('dotenv').config();
 
 exports.LogInAdmin = async (req, res) => {
     try {
         const data = req.body;
         const { email, password } = data;
 
+
         const randomOtp = Math.floor(1000 + Math.random() * 9000);
 
-        const existingUser = await userModel.findOne({ email: email, role: 'admin' });
+        const existingAdmin = await userModel.findOne({ email: email, role: 'admin' });
 
-        if (!existingUser) return res.status(400).send({ status: false, msg: "User Not Found" });
-
-        const comparePass = await bcrypt.compare(password, existingUser.password);
-        if (!comparePass) return res.status(400).send({ status: false, msg: "Wrong Password" });
+        if (!existingAdmin) return res.status(400).send({ status: false, msg: "User Not Found" });
 
         await userModel.findOneAndUpdate({ email: email, role: 'admin' }, { $set: { 'Varification.Admin.adminOtp': randomOtp } });
 
-        otpVerificationAdmin(existingUser.name, existingUser.email, randomOtp);
+        otpVerificationAdmin(existingAdmin.name, existingAdmin.email, randomOtp);
 
-        const token = jwt.sign({ userId: existingUser._id }, process.env.JWT_Admin_SECRET_KEY, { expiresIn: '1d' });
-        return res.status(200).send({ status: true, msg: 'Admin Login successfully', data: { token, id: existingUser._id } });
+         const AdminDB ={
+            userProfileImg: existingAdmin.profileImg,
+            name: existingAdmin.name,
+            email: existingAdmin.email,}
+
+        const token = jwt.sign({ adminId: existingAdmin._id }, process.env.JWT_Admin_SECRET_KEY, { expiresIn: '1d' });
+        return res.status(200).send({ status: true, msg: 'Pls Verify Your Otp', data: { token, id: existingAdmin._id ,AdminDB} });
+
+    }
+    catch (e) { errorHandlingdata(e, res) }
+}
+
+exports.adminOtpVerification = async (req, res) => {
+    try {
+        const otp = req.body.otp;
+        const id = req.params.id;
+
+        if (!otp) return res.status(400).send({ status: false, msg: "pls Provide OTP" });
+
+        const admin = await userModel.findById(id);
+
+        if (!admin) return res.status(400).send({ status: false, msg: "Admin Not Found" });
+
+        if (admin.role == 'user') return res.status(400).send({ status: false, msg: "You are not Admin" });
+
+        if (admin.Varification.Admin.adminOtp != otp) return res.status(400).send({ status: false, msg: "Wrong Otp" });
+
+        await userModel.findByIdAndUpdate({ _id: id }, { $set: { 'Varification.Admin.adminOtp': Math.floor(1000 + Math.random() * 9000) } }, { new: true });
+
+        res.status(200).send({ status: true, msg: "Successfully Otp Verified" })
 
     }
     catch (e) { errorHandlingdata(e, res) }
